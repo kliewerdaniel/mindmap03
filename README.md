@@ -2,6 +2,9 @@
 
 A comprehensive personal knowledge management system that builds interactive mind maps from your notes using local Large Language Models (LLMs) and vector embeddings.
 
+![alt text](1019009.png)
+
+
 ## Overview
 
 Mind Map AI transforms your personal notes, documents, and research into an intelligent, navigable knowledge graph. The system uses local LLMs for entity and relationship extraction, creating semantic connections between your ideas without relying on external APIs or cloud services.
