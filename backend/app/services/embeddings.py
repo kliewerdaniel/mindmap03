@@ -1,6 +1,5 @@
 from sentence_transformers import SentenceTransformer
 import chromadb
-from chromadb.config import Settings
 from typing import List, Dict, Optional
 from pathlib import Path
 from ..config import settings
@@ -14,10 +13,7 @@ class EmbeddingStore:
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
 
         # Initialize ChromaDB
-        self.chroma_client = chromadb.Client(Settings(
-            chroma_db_impl="duckdb+parquet",
-            persist_directory=str(settings.vector_db_path)
-        ))
+        self.chroma_client = chromadb.PersistentClient(path=str(settings.vector_db_path))
 
         # Get or create collections
         self.notes_collection = self.chroma_client.get_or_create_collection(
@@ -155,4 +151,15 @@ def init_embeddings():
     """Initialize embedding store on startup."""
     global _embedding_store
     settings.vector_db_path.mkdir(parents=True, exist_ok=True)
-    _embedding_store = EmbeddingStore()
+    try:
+        _embedding_store = EmbeddingStore()
+    except ValueError as e:
+        if "deprecated configuration" in str(e):
+            # Clear old Chroma data and try again
+            import shutil
+            if settings.vector_db_path.exists():
+                shutil.rmtree(settings.vector_db_path)
+            settings.vector_db_path.mkdir(parents=True, exist_ok=True)
+            _embedding_store = EmbeddingStore()
+        else:
+            raise

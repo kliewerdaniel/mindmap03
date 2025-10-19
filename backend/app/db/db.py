@@ -3,17 +3,19 @@ from pathlib import Path
 from typing import Optional, Dict, List, Any
 import hashlib
 import json
-
-DB_PATH = Path(__file__).parent.parent.parent.parent / "data" / "mindmap.db"
+from ..config import settings
 
 def get_connection() -> sqlite3.Connection:
     """Get SQLite connection with row factory."""
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(str(settings.db_path))
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_database():
     """Initialize database with schema."""
+    # Ensure parent directory exists
+    settings.db_path.parent.mkdir(parents=True, exist_ok=True)
+
     schema_path = Path(__file__).parent / "schema.sql"
     with open(schema_path) as f:
         schema = f.read()

@@ -9,9 +9,9 @@ class Settings(BaseSettings):
     embedding_model: str = "all-minilm"
 
     # Database Paths
-    db_path: Path = Path(__file__).parent.parent.parent / "data" / "mindmap.db"
-    graph_path: Path = Path(__file__).parent.parent.parent / "data" / "graph.gpickle"
-    vector_db_path: Path = Path(__file__).parent.parent.parent / "data" / "vectors"
+    db_path: Path = Path("/app/data/mindmap.db")
+    graph_path: Path = Path("/app/data/graph.gpickle")
+    vector_db_path: Path = Path("/app/data/vectors")
 
     # API Configuration
     api_host: str = "0.0.0.0"

@@ -7,13 +7,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    # volumes:
-    #   - ./data:/app/data
-    #   - ./backend:/app/backend:ro
+    volumes:
+      - ./data:/app/data
+      - ./backend:/app/backend:ro
     environment:
       - PYTHONPATH=/app
       - DISABLE_EXTERNAL_LLM=${DISABLE_EXTERNAL_LLM:-false}
       - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-10485760}
+      - HF_HOME=/tmp/huggingface
+      - TRANSFORMERS_CACHE=/tmp/huggingface/transformers
+      - SENTENCE_TRANSFORMERS_HOME=/tmp/huggingface/sentence_transformers
     user: "501:20"
     networks:
       - mindmap-network

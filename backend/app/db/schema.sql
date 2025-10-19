@@ -1,6 +1,6 @@
 -- Table: notes
 -- Stores raw markdown/text content with metadata
-CREATE TABLE notes (
+CREATE TABLE IF NOT EXISTS notes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   filename TEXT NOT NULL,
   content TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE notes (
 
 -- Table: extracts
 -- Stores LLM extraction results with provenance
-CREATE TABLE extracts (
+CREATE TABLE IF NOT EXISTS extracts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   note_id INTEGER NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   extractor_model TEXT NOT NULL,  -- Model identifier (e.g., "llama3-8b")
@@ -25,13 +25,13 @@ CREATE TABLE extracts (
 
 -- Table: metadata
 -- Key-value store for system metadata
-CREATE TABLE metadata (
+CREATE TABLE IF NOT EXISTS metadata (
   key TEXT PRIMARY KEY,
   value TEXT,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Indexes for performance
-CREATE INDEX idx_notes_hash ON notes(hash);
-CREATE INDEX idx_notes_processed ON notes(processed);
-CREATE INDEX idx_extracts_note_id ON extracts(note_id);
+CREATE INDEX IF NOT EXISTS idx_notes_hash ON notes(hash);
+CREATE INDEX IF NOT EXISTS idx_notes_processed ON notes(processed);
+CREATE INDEX IF NOT EXISTS idx_extracts_note_id ON extracts(note_id);

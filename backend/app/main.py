@@ -42,10 +42,12 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
 @app.on_event("startup")
 async def startup_event():
     init_database()
-    from .services.graph_store import init_graph
-    from .services.embeddings import init_embeddings
-    init_graph()
-    init_embeddings()
+    # TODO: Fix ChromaDB configuration for embeddings
+    # from .services.graph_store import init_graph
+    # from .services.embeddings import init_embeddings
+    # init_graph()
+    # init_embeddings()
+    print("Database initialized successfully. Embedding services temporarily disabled.")
 
 # Include routers
 app.include_router(ingest.router, prefix="/api/ingest", tags=["ingestion"])

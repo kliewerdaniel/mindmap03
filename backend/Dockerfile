@@ -29,14 +29,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create data directory
+# Create data directory - ownership will be set at runtime
 RUN mkdir -p /app/data
 
-# Change ownership to appuser
-RUN chown -R appuser:appuser /app
+# Make entrypoint script executable
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
-# Switch to non-root user
-USER appuser
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose port
 EXPOSE 8000
