@@ -454,3 +454,134 @@ This Phase 3 implementation creates a complete end-to-end pipeline from text ing
 - **User Feedback**: Relevance rankings can improve with user interaction data
 
 This Phase 4 implementation adds powerful semantic search capabilities while maintaining the local-first, privacy-focused architecture. The embedding strategy integrates seamlessly with the existing extraction pipeline and provides a foundation for advanced knowledge discovery features in future phases.
+
+## Phase 5: Frontend Setup & Graph Visualization
+
+**Date:** October 19, 2025
+**Status:** Completed ✅
+
+### Frontend Framework Selection
+
+**Next.js with App Router:**
+- **Rationale**: Modern React framework with built-in app directory structure, TypeScript support, and optimal developer experience. App Router provides cleaner routing without page directory complexity.
+- **Alternatives Considered**: Create React App (outdated), Vite + React (suitable but Next.js provides better production optimizations).
+- **Impact**: Server-side rendering support, automatic code splitting, and built-in API routes for future expansion.
+
+**TypeScript Implementation:**
+- **Strict Mode**: Full TypeScript with strict type checking for type safety and better developer experience.
+- **API Type Definitions**: Complete interfaces for graph data, nodes, edges, and search results mirror backend models.
+
+**Tailwind CSS Styling:**
+- **Dark Theme Focus**: Custom dark gray color palette optimized for graph visualization background.
+- **Component-First**: Utility classes applied directly in components for rapid development and consistent styling.
+
+### Graph Visualization Architecture
+
+**Cytoscape.js Integration:**
+- **React-Cytoscapejs**: Declarative React wrapper for Cytoscape graph visualization library.
+- **COSE Layout Algorithm**: Force-directed layout algorithm provides organic, readable graph layouts.
+- **Custom Styling**: Node sizing based on provenance count, color coding by node type, and edge thickness based on confidence scores.
+
+**Graph Data Flow:**
+- **React Query Integration**: Server state management with automatic caching, background refetching, and error handling.
+- **Real-time Updates**: 30-second polling interval ensures graph stays synchronized with backend changes.
+- **Streaming Optimizations**: Elements array re-computation only on data changes prevents unnecessary re-renders.
+
+### Component Architecture
+
+**GraphCanvas Component:**
+- **Imperative Cytoscape Management**: Direct Cytoscape instance access for complex event handling and layout operations.
+- **Event-Driven Interactions**: Click and double-click handlers for node selection and detail panel activation.
+- **Performance Optimization**: Selective re-rendering based on props changes with ref-based Cytoscape instance management.
+
+**NodeDetailsPanel Component:**
+- **Dynamic Loading**: Individual node fetching prevents loading unnecessary data until requested.
+- **Provenance Display**: Visual confidence indicators and source text linking for knowledge provenance.
+- **Responsive Sidebar**: Slide-in panel with scrollable content and close functionality.
+
+**Page-Level State Management:**
+- **Local State**: Node selection and panel visibility managed at page level for coordinated component interactions.
+- **Provider Pattern**: React Query client provided at root level for consistent data fetching behavior.
+
+### API Integration Strategy
+
+**Axios HTTP Client:**
+- **Global Base URL**: Localhost backend proxying through Next.js rewrite rules.
+- **Timeout Configuration**: 30-second request timeouts for long-running operations.
+- **Type-Safe Endpoints**: Separate API modules for graph, search, and ingestion operations.
+
+**React Query Data Management:**
+- **Cache-Based**: Automatic request deduplication and background updates reduce unnecessary API calls.
+- **Error Boundaries**: Loading states and error handling integrated into UI components.
+- **Stale-Time Optimization**: 60-second cache validity balances freshness with performance.
+
+### Responsive Design Decisions
+
+**Mobile-First Approach:**
+- **Desktop Priority**: Graph visualization requires substantial screen real estate for effective interaction.
+- **Tablet Support**: Panel overlays planned for intermediate screen sizes.
+- **Mobile Limitations**: Complex graph operations not prioritized for tiny screens.
+
+**Layout Structure:**
+- **Full-Screen Graph**: Canvas utilizes complete viewport for maximum visualization area.
+- **Absolute Positioning**: Statistics and legend overlays positioned for optimal information display.
+- **Flexible Panels**: Details sidebar pushes content without constraining graph space.
+
+### Performance & Accessibility Considerations
+
+**Rendering Optimizations:**
+- **Selective Updates**: Component re-renders triggered only on meaningful state changes.
+- **Memory Management**: Cytoscape instance cleanup on component unmounting.
+- **Large Graph Handling**: Layout algorithms and rendering optimized for hundreds of nodes.
+
+**Accessibility Features:**
+- **Keyboard Navigation**: Tab-based interaction support for screen readers.
+- **Semantic HTML**: ARIA labels and proper heading structure for assistive technologies.
+- **Color Contrast**: WCAG AA compliant color ratios for all UI elements.
+
+**Error Handling:**
+- **Graceful Degradation**: Empty graph states with helpful user guidance when no data available.
+- **Network Resilience**: Failed requests display appropriate error messages without breaking the UI.
+- **Loading Indicators**: Skeleton screens and progress indicators for better user experience.
+
+### Visual Design System
+
+**Node Type Color Palette:**
+- **Semantic Mapping**: Distinct colors for entity types (blue: concept, green: person, amber: place, etc.).
+- **Provenance Scaling**: Node sizes reflect source text occurrences for visual importance indicators.
+- **Edge Weight Visualization**: Line thickness represents relationship confidence levels.
+
+**Dark Theme Optimization:**
+- **Graph Background**: Gray-900 background reduces eye strain during graph exploration.
+- **UI Contrast**: Adequate contrast ratios ensure readability in dark environment.
+- **Highlight States**: Yellow accent color for selected states provides clear visual feedback.
+
+### Testing Strategy
+
+**Component Testing Foundation:**
+- **React Testing Library**: Modern testing utilities for component behavior validation.
+- **Integration Testing**: User interaction flows (click → panel open) thoroughly tested.
+- **Mock Data**: Simulated graph data for predictable test execution.
+
+**E2E Testing Preparation:**
+- **Playwright Integration**: Critical user flows identified for automated browser testing.
+- **Data Flow Validation**: Note upload → processing → graph display sequence coverage.
+
+### Future Extensibility
+
+**Multi-Page Architecture:**
+- **Routing Ready**: App router structure supports additional pages (upload, search, settings).
+- **Component Reusability**: API client and visualization components designed for cross-page usage.
+- **Navigation Framework**: Foundation for expanding beyond single-page graph view.
+
+**Advanced Features:**
+- **Search Integration**: Semantic search UI ready for Phase 6 note upload functionality.
+- **Real-time Collaboration**: Architecture supports WebSocket integration for multi-user editing.
+- **Graph Manipulation**: Edit operations foundation for relationship creation and modification.
+
+**Performance Scaling:**
+- **Virtual Scrolling**: Large graphs can implement node virtualization for thousands of elements.
+- **Progressive Loading**: Level-of-detail rendering for zoomed-out graph views.
+- **WebAssembly**: Heavy computation can be offloaded to WebAssembly for better performance.
+
+This Phase 5 implementation delivers a complete, interactive graph visualization frontend that seamlessly integrates with the backend API infrastructure. The architecture provides a solid foundation for the remaining features while maintaining high standards for performance, accessibility, and user experience.
