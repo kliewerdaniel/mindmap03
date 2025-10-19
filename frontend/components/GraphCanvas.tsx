@@ -5,6 +5,9 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import Cytoscape from 'cytoscape';
 import { GraphData, Node } from '../lib/api';
 
+// We need to use any for Cytoscape styles due to complex type issues
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 interface GraphCanvasProps {
   data: GraphData;
   onNodeClick?: (node: Node) => void;
@@ -19,7 +22,7 @@ const GraphCanvas: React.FC<GraphCanvasProps> = ({
   selectedNodeId,
 }) => {
   const cyRef = useRef<Cytoscape.Core | null>(null);
-  const [elements, setElements] = useState<any[]>([]);
+  const [elements, setElements] = useState<Cytoscape.ElementDefinition[]>([]);
 
   useEffect(() => {
     // Convert GraphData to Cytoscape elements

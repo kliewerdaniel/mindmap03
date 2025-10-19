@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { CloudArrowUpIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
-import { ingestAPI, graphAPI } from '../lib/api';
+import { ingestAPI } from '../lib/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const NoteUploader: React.FC = () => {
