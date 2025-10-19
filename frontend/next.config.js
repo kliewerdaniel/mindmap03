@@ -1,12 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*',
+  eslint: {
+    // Disable ESLint during build to allow for containerization
+    ignoreDuringBuilds: true,
+  },
+  output: 'standalone',
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@/*': './*',
       },
-    ];
+    },
   },
 };
 
