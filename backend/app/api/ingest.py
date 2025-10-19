@@ -1,8 +1,10 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List
+from pathlib import Path
 from ..db.db import insert_note
 from ..services.extractor import process_note
+from ..config import settings
 import zipfile
 import io
 
@@ -12,6 +14,24 @@ class IngestTextRequest(BaseModel):
     filename: str
     content: str
     source_path: str = None
+
+    @validator('filename')
+    def validate_filename(cls, v):
+        """Validate filename has allowed extension."""
+        if not v:
+            raise ValueError('Filename cannot be empty')
+        ext = Path(v).suffix.lower()
+        if ext not in settings.allowed_extensions:
+            raise ValueError(f'File extension {ext} not allowed. Allowed: {settings.allowed_extensions}')
+        return v
+
+    @validator('content')
+    def validate_content_size(cls, v):
+        """Validate content size does not exceed max upload size."""
+        content_size = len(v.encode('utf-8'))
+        if content_size > settings.max_upload_size:
+            raise ValueError(f'Content size {content_size} bytes exceeds maximum allowed size of {settings.max_upload_size} bytes')
+        return v
 
 class IngestResponse(BaseModel):
     note_id: int
@@ -55,13 +75,25 @@ async def ingest_file(
 
     Supports single .md files or .zip archives containing multiple .md files.
     """
-    if not file.filename.endswith(('.md', '.txt', '.zip')):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Filename is required")
+
+    # Check file extension against allowed extensions
+    ext = Path(file.filename).suffix.lower()
+    if ext not in settings.allowed_extensions:
         raise HTTPException(
             status_code=400,
-            detail="Only .md, .txt, or .zip files are supported"
+            detail=f"File extension {ext} not allowed. Allowed extensions: {settings.allowed_extensions}"
         )
 
     content = await file.read()
+
+    # Check file size against max upload size
+    if len(content) > settings.max_upload_size:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File size {len(content)} bytes exceeds maximum allowed size of {settings.max_upload_size} bytes"
+        )
     note_ids = []
 
     try:

@@ -7,3 +7,4 @@ sentence-transformers==2.3.1
 chromadb==0.4.22
 numpy==1.26.3
 python-multipart==0.0.6
+slowapi==0.1.9

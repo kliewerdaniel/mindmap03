@@ -163,60 +163,281 @@ export TESTING=true
 export DATABASE_URL=sqlite:///./test.db
 ```
 
-## Docker Support (Optional)
+## Docker Containerization
 
-### Building Docker Image
+### Overview
 
-**Build backend image:**
-```dockerfile
-# Dockerfile
-FROM python:3.9-slim
+Mind Map AI provides complete containerization with Docker and Docker Compose for both backend and frontend services, including Ollama for local LLM processing. The setup includes security hardening, health checks, and proper networking.
 
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+### Container Architecture
 
-COPY . .
-EXPOSE 8000
+- **Backend**: Python FastAPI application with security middleware
+- **Frontend**: Next.js React application with TypeScript
+- **Ollama**: Local LLM server for embeddings and generation
+- **Networking**: Isolated bridge network for inter-service communication
+- **Volumes**: Persistent storage for data and Ollama models
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+### Prerequisites
 
+**Install Docker and Docker Compose:**
 ```bash
-docker build -t mindmap-ai-backend .
+# Install Docker (Ubuntu/Debian)
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-### Running with Docker
+### Quick Start with Docker Compose
 
+**Clone and navigate to project:**
 ```bash
-# Run backend
-docker run -p 8000:8000 mindmap-ai-backend
-
-# With volume mounts for data persistence
-docker run -p 8000:8000 -v $(pwd)/data:/app/data mindmap-ai-backend
+git clone <repository-url>
+cd mindmap03
 ```
 
-### Docker Compose (if using)
+**Start all services:**
+```bash
+docker-compose up -d
+```
 
+**View service status:**
+```bash
+docker-compose ps
+# Expected output shows all services healthy
+```
+
+**View logs:**
+```bash
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f backend
+```
+
+**Stop services:**
+```bash
+docker-compose down
+```
+
+### Development with Docker Compose
+
+**Build and start services:**
+```bash
+# Build with no cache
+docker-compose build --no-cache
+
+# Start services
+docker-compose up -d
+
+# Follow logs with timestamps
+docker-compose logs -f -t
+```
+
+**Access services:**
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+- **Ollama**: http://localhost:11434
+
+### Ollama Setup in Docker
+
+**Pull required models:**
+```bash
+# Connect to Ollama container
+docker-compose exec ollama bash
+
+# Pull models
+ollama pull granite4:micro-h  # For generation
+ollama pull all-minilm        # For embeddings
+```
+
+**Verify models are loaded:**
+```bash
+ollama list
+# Expected output shows installed models
+```
+
+### Environment Configuration
+
+**Create environment file (.env):**
+```bash
+# Project root .env file
+DISABLE_EXTERNAL_LLM=true
+MAX_UPLOAD_SIZE=10485760
+ALLOWED_EXTENSIONS=".md,.txt,.zip"
+```
+
+**Security settings:**
+- `DISABLE_EXTERNAL_LLM`: Enforce local-only LLM processing
+- `MAX_UPLOAD_SIZE`: Maximum file upload size in bytes
+- `ALLOWED_EXTENSIONS`: Whitelist of allowed file extensions
+
+### Production Deployment
+
+**Production configuration:**
+```bash
+# Create production .env
+cp .env.example .env.production
+
+# Build production images
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+
+# Deploy
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+**Production docker-compose.prod.yml:**
 ```yaml
-# docker-compose.yml
 version: '3.8'
 
 services:
   backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data
     environment:
-      - ENVIRONMENT=docker
+      - DISABLE_EXTERNAL_LLM=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://yourdomain.com/api
 ```
+
+### Manual Docker Commands
+
+**Build individual images:**
+```bash
+# Backend
+docker build -t mindmap-ai-backend ./backend
+
+# Frontend
+docker build -t mindmap-ai-frontend ./frontend
+```
+
+**Run individual containers:**
+```bash
+# Backend only
+docker run -d -p 8000:8000 -v $(pwd)/data:/app/data mindmap-ai-backend
+
+# Frontend only
+docker run -d -p 3000:3000 mindmap-ai-frontend
+```
+
+**Ollama standalone:**
+```bash
+docker run -d -p 11434:11434 --name ollama ollama/ollama
+```
+
+### Container Management
+
+**Health checks:**
+```bash
+# Check all service health
+docker-compose ps
+
+# Test backend health
+curl http://localhost:8000/health
+
+# Test frontend health
+curl -I http://localhost:3000
+```
+
+**Container cleanup:**
+```bash
+# Stop and remove containers
+docker-compose down
+
+# Remove volumes
+docker-compose down -v
+
+# Remove images
+docker-compose down --rmi all
+
+# Complete cleanup
+docker system prune -af
+```
+
+### Troubleshooting Docker Issues
+
+**Container startup failures:**
+```bash
+# Check logs
+docker-compose logs backend
+
+# Check container status
+docker-compose ps
+
+# Restart failing service
+docker-compose restart backend
+```
+
+**Permission issues:**
+```bash
+# Fix data directory permissions
+sudo chown -R 1000:1000 ./data
+
+# Check Docker daemon status
+sudo systemctl status docker
+```
+
+**Port conflicts:**
+```bash
+# Check port usage
+lsof -i :8000
+
+# Change ports in docker-compose.yml
+ports:
+  - "8001:8000"  # Change external port
+```
+
+**Memory/CPU issues:**
+```bash
+# Monitor resource usage
+docker stats
+
+# Adjust limits in docker-compose.yml
+deploy:
+  resources:
+    limits:
+      memory: 2G
+      cpus: '2.0'
+```
+
+### Security Considerations
+
+**Container security:**
+- Non-root user execution in all containers
+- Minimal base images (slim/alpine)
+- No privileged containers
+- Proper .dockerignore usage
+
+**Network security:**
+- Isolated network for inter-service communication
+- No external exposure of sensitive services
+- Proper CORS configuration
+
+### Performance Optimization
+
+**Build optimization:**
+- Multi-stage builds for smaller images
+- Proper layer caching with .dockerignore
+- Dependency installation before code copy
+
+**Runtime optimization:**
+- Health checks for service orchestration
+- Proper restart policies
+- Resource limits and reservations
+
+This containerization setup provides a production-ready deployment while maintaining the local-first security model of Mind Map AI.
 
 ## Monitoring and Logging
 

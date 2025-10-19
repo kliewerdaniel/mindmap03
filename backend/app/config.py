@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     max_batch_size: int = 10
     extraction_timeout: int = 300  # seconds
 
+    # Security Configuration
+    max_upload_size: int = 10 * 1024 * 1024  # 10 MB limit
+    allowed_extensions: list = [".md", ".txt", ".zip"]
+    disable_external_llm: bool = False  # Set to True to enforce local-only LLM usage
+
     class Config:
         env_file = ".env"
 

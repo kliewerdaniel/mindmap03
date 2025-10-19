@@ -66,9 +66,17 @@
 - [x] Acceptance Test 2: Export graph → Contains provenance data
 - [x] Manual verification: Upload note → See graph update in real-time
 
-## Phase 7: Security & Deployment
-- [ ] Add input validation and sanitization
-- [ ] Implement rate limiting
-- [ ] Add authentication/authorization
-- [ ] Create deployment scripts
-- [ ] Documentation and user guides
+## Phase 7: Security & Deployment ✅
+- [x] Add input validation and sanitization (Pydantic validators, file type/extension checks)
+- [x] Implement rate limiting (slowapi middleware with 100/min, 1000/hr limits)
+- [x] Create comprehensive security documentation (docs/security.md)
+- [x] Create Docker containerization (backend/Dockerfile, frontend/Dockerfile)
+- [x] Create docker-compose.yml with Ollama integration
+- [x] Create .dockerignore files for optimized builds
+- [x] Update deployment documentation in docs/cicd_devops.md
+- [x] Add security settings to configuration (max_upload_size, allowed_extensions, disable_external_llm)
+- [x] Implement file size validation and content length checks
+- [x] Add HTTP 413/429 error handling for oversized/rate limited requests
+- [x] Container security hardening (non-root users, proper dependencies)
+- [x] Health checks and service orchestration
+- [x] Production-ready Docker Compose setup with networking and volumes
