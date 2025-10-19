@@ -585,3 +585,261 @@ This Phase 4 implementation adds powerful semantic search capabilities while mai
 - **WebAssembly**: Heavy computation can be offloaded to WebAssembly for better performance.
 
 This Phase 5 implementation delivers a complete, interactive graph visualization frontend that seamlessly integrates with the backend API infrastructure. The architecture provides a solid foundation for the remaining features while maintaining high standards for performance, accessibility, and user experience.
+
+## Phase 6: Note Upload & Integration Testing
+
+**Date:** October 19, 2025
+**Status:** Completed ✅
+
+### Upload UI Architecture
+
+**React-Dropzone Integration:**
+- **Declarative File Handling**: Dropzone component provides clean drag-and-drop interface with visual feedback
+- **Multi-Format Support**: Accepts markdown (.md), plain text (.txt), and ZIP archives (.zip) files
+- **User Experience**: Active drag states, clear acceptance criteria, and loading indicators provide intuitive interaction
+
+**React Query Mutation Management:**
+- **File Upload Mutations**: Dedicated mutation function for file ingestion with error handling and success callbacks
+- **Cache Invalidation**: Automatic graph data refetch after successful uploads keeps UI synchronized
+- **Loading States**: MutateAsync loading flags prevent duplicate submissions and provide user feedback
+
+### Frontend State Management
+
+**Dashboard Statistics Display:**
+- **Real-time Metrics**: Live node/edge count and graph density calculations display current knowledge base health
+- **Responsive Grid**: Three-column layout adapts to different screen sizes while maintaining readability
+- **Query-Based Updates**: TanStack Query automatically refetches stats to show upload progress
+
+**Progress Indicators:**
+- **Upload Status Messages**: Clear success/failure feedback with file information and processing updates
+- **Visual Loading States**: Animated processing indicators using Heroicons for Native UI consistency
+- **Error Recovery**: Mutation error states displayed with actionable error messages
+
+### Integration Test Strategy
+
+**Comprehensive End-to-End Coverage:**
+- **API Health Verification**: Ensures backend connectivity before complex test scenarios
+- **Full Pipeline Testing**: Complete flow from text ingestion through processing to graph creation validation
+- **Provenance Verification**: Confirms traceability from graph nodes back to source documents
+
+**Test Data Design:**
+- **Diverse Content**: Three markdown files covering productivity, AI research, and project planning scenarios
+- **Realistic Structure**: Representative content with headings, lists, and topic relationships for meaningful extraction
+- **Controlled Scale**: Small dataset enables rapid testing while providing meaningful graph structure
+
+**Validation Logic:**
+- **Schema Compliance**: Node and edge type validation ensures extraction quality meets expectations
+- **Provenance Requirements**: Mandatory provenance tracking validated for knowledge trustworthiness
+- **Semantic Relevance**: Content-based assertions verify meaningful graph construction
+
+### Pytest Configuration
+
+**Testing Infrastructure:**
+- **Project-level Configuration**: pytest.ini at root provides consistent test discovery and output formatting
+- **Verbose Reporting**: Short traceback format balances detail with readability for CI/CD integration
+- **Path Organization**: Standard Python package structure supports growing test suite
+
+**Test Organization:**
+- **Integration Directory**: Dedicated integration/ subdirectory separates end-to-end tests from unit tests
+- **Acceptance Criteria**: Tests directly validate Phase 2 and user story requirements
+- **Modular Assertions**: Individual test functions focus on specific validation aspects
+
+### Manual Testing Workflow
+
+**Database Verification:**
+- **Note Storage Validation**: SQLite inspection confirms proper content persistence and processing flags
+- **Extraction Audit**: Extract table review verifies LLM processing results storage
+- **Performance Monitoring**: Database queries validate processing pipeline efficiency
+
+**End-to-End User Flow:**
+- **Upload Interaction**: Drag-and-drop file operations with immediate visual feedback
+- **Processing Monitoring**: Real-time status updates during LLM extraction and graph integration
+- **Graph Synchronization**: Automatic visualization updates confirm successful knowledge extraction
+
+**Cross-Platform Compatibility:**
+- **Browser Testing**: Interface validation across major browsers for consistent experience
+- **File Format Handling**: ZIP archive extraction and multiple file type processing verification
+- **Network Resilience**: Error handling for backend unavailability and timeout scenarios
+
+### Testing Results & Validation
+
+**Acceptance Test 1 - Sample Notes Ingestion:**
+- **Status**: ✅ **PASSED**
+- **Validation**: Successfully ingested sample notes with meaningful node and edge creation
+- **Metrics**: 10+ nodes and relationships extracted from three test documents
+- **Quality Check**: All nodes contain proper type classification and provenance metadata
+
+**Acceptance Test 2 - Provenance Verification:**
+- **Status**: ✅ **PASSED**
+- **Validation**: Exported GraphML contains complete provenance tracking
+- **Traceability**: Each node links back to specific text spans in source documents
+- **Data Integrity**: Provenance spans validated for accuracy and source attribution
+
+**Integration Test Suite:**
+- **Coverage**: Health checks, ingestion pipeline, semantic search, and export functionality
+- **Reliability**: Asynchronous processing polling ensures complete extraction before validation
+- **Performance**: Within 2-minute timeout for full pipeline completion
+
+### Production Readiness Assessment
+
+**User Experience Quality:**
+- **Intuitive Upload**: Drag-and-drop interface eliminates complex file selection workflows
+- **Immediate Feedback**: Real-time status updates keep users informed of background processing
+- **Error Transparency**: Clear error messages enable users to resolve upload issues independently
+
+**System Reliability:**
+- **Background Processing**: Non-blocking uploads maintain responsive UI during resource-intensive operations
+- **Data Consistency**: Atomic transactions ensure graph integrity during concurrent operations
+- **Failure Recovery**: Failed extractions don't corrupt graph state or block subsequent uploads
+
+**Performance Characteristics:**
+- **Memory Efficiency**: Streaming file processing prevents large file memory exhaustion
+- **CPU Utilization**: Local LLM inference managed to prevent system slowdowns
+- **Storage Optimization**: Deduplication prevents redundant content storage
+
+### Future Testing Enhancements
+
+**Automated UI Testing:**
+- **Playwright Integration**: Browser-based testing for upload workflows and graph interactions
+- **Visual Regression**: Screen capture validation prevents unintended UI changes
+- **Performance Monitoring**: Load time and memory usage tracking for optimization opportunities
+
+**Load Testing:**
+- **Batch Upload Stress Testing**: Large volume processing capability validation
+- **Concurrent User Simulation**: Multi-client upload scenario testing
+- **Resource Monitoring**: CPU, memory, and disk usage analysis under load
+
+**Quality Assurance Expansion:**
+- **Cross-Platform Testing**: macOS, Windows, and Linux compatibility validation
+- **LLM Model Compatibility**: Multiple Ollama model performance and accuracy comparison
+- **Data Format Coverage**: Extended file type support testing (EPUB, DOCX, etc.)
+
+This Phase 6 implementation completes the note upload user experience and establishes comprehensive integration testing that validates the complete Mind Map AI pipeline from file upload through knowledge graph creation. The testing framework ensures pipeline reliability while the upload interface provides an intuitive entry point for users to populate their personal knowledge graphs.
+
+## Phase 6: Note Upload & Integration Testing
+
+**Date:** October 19, 2025
+**Status:** Completed ✅
+
+### Upload UI Architecture
+
+**React-Dropzone Integration:**
+- **Declarative File Handling**: Dropzone component provides clean drag-and-drop interface with visual feedback
+- **Multi-Format Support**: Accepts markdown (.md), plain text (.txt), and ZIP archives (.zip) files
+- **User Experience**: Active drag states, clear acceptance criteria, and loading indicators provide intuitive interaction
+
+**React Query Mutation Management:**
+- **File Upload Mutations**: Dedicated mutation function for file ingestion with error handling and success callbacks
+- **Cache Invalidation**: Automatic graph data refetch after successful uploads keeps UI synchronized
+- **Loading States**: MutateAsync loading flags prevent duplicate submissions and provide user feedback
+
+### Frontend State Management
+
+**Dashboard Statistics Display:**
+- **Real-time Metrics**: Live node/edge count and graph density calculations display current knowledge base health
+- **Responsive Grid**: Three-column layout adapts to different screen sizes while maintaining readability
+- **Query-Based Updates**: TanStack Query automatically refetches stats to show upload progress
+
+**Progress Indicators:**
+- **Upload Status Messages**: Clear success/failure feedback with file information and processing updates
+- **Visual Loading States**: Animated processing indicators using Heroicons for Native UI consistency
+- **Error Recovery**: Mutation error states displayed with actionable error messages
+
+### Integration Test Strategy
+
+**Comprehensive End-to-End Coverage:**
+- **API Health Verification**: Ensures backend connectivity before complex test scenarios
+- **Full Pipeline Testing**: Complete flow from text ingestion through processing to graph creation validation
+- **Provenance Verification**: Confirms traceability from graph nodes back to source documents
+
+**Test Data Design:**
+- **Diverse Content**: Three markdown files covering productivity, AI research, and project planning scenarios
+- **Realistic Structure**: Representative content with headings, lists, and topic relationships for meaningful extraction
+- **Controlled Scale**: Small dataset enables rapid testing while providing meaningful graph structure
+
+**Validation Logic:**
+- **Schema Compliance**: Node and edge type validation ensures extraction quality meets expectations
+- **Provenance Requirements**: Mandatory provenance tracking validated for knowledge trustworthiness
+- **Semantic Relevance**: Content-based assertions verify meaningful graph construction
+
+### Pytest Configuration
+
+**Testing Infrastructure:**
+- **Project-level Configuration**: pytest.ini at root provides consistent test discovery and output formatting
+- **Verbose Reporting**: Short traceback format balances detail with readability for CI/CD integration
+- **Path Organization**: Standard Python package structure supports growing test suite
+
+**Test Organization:**
+- **Integration Directory**: Dedicated integration/ subdirectory separates end-to-end tests from unit tests
+- **Acceptance Criteria**: Tests directly validate Phase 2 and user story requirements
+- **Modular Assertions**: Individual test functions focus on specific validation aspects
+
+### Manual Testing Workflow
+
+**Database Verification:**
+- **Note Storage Validation**: SQLite inspection confirms proper content persistence and processing flags
+- **Extraction Audit**: Extract table review verifies LLM processing results storage
+- **Performance Monitoring**: Database queries validate processing pipeline efficiency
+
+**End-to-End User Flow:**
+- **Upload Interaction**: Drag-and-drop file operations with immediate visual feedback
+- **Processing Monitoring**: Real-time status updates during LLM extraction and graph integration
+- **Graph Synchronization**: Automatic visualization updates confirm successful knowledge extraction
+
+**Cross-Platform Compatibility:**
+- **Browser Testing**: Interface validation across major browsers for consistent experience
+- **File Format Handling**: ZIP archive extraction and multiple file type processing verification
+- **Network Resilience**: Error handling for backend unavailability and timeout scenarios
+
+### Testing Results & Validation
+
+**Acceptance Test 1 - Sample Notes Ingestion:**
+- **Status**: ✅ **PASSED**
+- **Validation**: Successfully ingested sample notes with meaningful node and edge creation
+- **Metrics**: 10+ nodes and relationships extracted from three test documents
+- **Quality Check**: All nodes contain proper type classification and provenance metadata
+
+**Acceptance Test 2 - Provenance Verification:**
+- **Status**: ✅ **PASSED**
+- **Validation**: Exported GraphML contains complete provenance tracking
+- **Traceability**: Each node links back to specific text spans in source documents
+- **Data Integrity**: Provenance spans validated for accuracy and source attribution
+
+**Integration Test Suite:**
+- **Coverage**: Health checks, ingestion pipeline, semantic search, and export functionality
+- **Reliability**: Asynchronous processing polling ensures complete extraction before validation
+- **Performance**: Within 2-minute timeout for full pipeline completion
+
+### Production Readiness Assessment
+
+**User Experience Quality:**
+- **Intuitive Upload**: Drag-and-drop interface eliminates complex file selection workflows
+- **Immediate Feedback**: Real-time status updates keep users informed of background processing
+- **Error Transparency**: Clear error messages enable users to resolve upload issues independently
+
+**System Reliability:**
+- **Background Processing**: Non-blocking uploads maintain responsive UI during resource-intensive operations
+- **Data Consistency**: Atomic transactions ensure graph integrity during concurrent operations
+- **Failure Recovery**: Failed extractions don't corrupt graph state or block subsequent uploads
+
+**Performance Characteristics:**
+- **Memory Efficiency**: Streaming file processing prevents large file memory exhaustion
+- **CPU Utilization**: Local LLM inference managed to prevent system slowdowns
+- **Storage Optimization**: Deduplication prevents redundant content storage
+
+### Future Testing Enhancements
+
+**Automated UI Testing:**
+- **Playwright Integration**: Browser-based testing for upload workflows and graph interactions
+- **Visual Regression**: Screen capture validation prevents unintended UI changes
+- **Performance Monitoring**: Load time and memory usage tracking for optimization opportunities
+
+**Load Testing:**
+- **Batch Upload Stress Testing**: Large volume processing capability validation
+- **Concurrent User Simulation**: Multi-client upload scenario testing
+- **Resource Monitoring**: CPU, memory, and disk usage analysis under load
+
+**Quality Assurance Expansion:**
+- **Cross-Platform Testing**: macOS, Windows, and Linux compatibility validation
+- **LLM Model Compatibility**: Multiple Ollama model performance and accuracy comparison
+- **Data Format Coverage**: Extended file type support testing (EPUB, DOCX, etc.)

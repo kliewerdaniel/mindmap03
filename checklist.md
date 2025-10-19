@@ -51,12 +51,20 @@
 - [x] Update design system documentation
 - [x] Update testing documentation
 
-## Phase 6: Note Upload & Integration Testing
-- [ ] Create note upload and processing pipeline
-- [ ] Implement end-to-end data flow
-- [ ] Add comprehensive testing suite
-- [ ] Create integration test scenarios
-- [ ] Performance optimization
+## Phase 6: Note Upload & Integration Testing ✅
+- [x] Create NoteUploader component with drag-and-drop functionality
+- [x] Update frontend/app/page.tsx to dashboard page with stats
+- [x] Install react-dropzone dependency
+- [x] Create sample test data in data/notes/
+- [x] Create integration tests in tests/integration/test_full_pipeline.py
+- [x] Add pytest.ini configuration
+- [x] Update docs/testing.md with integration test instructions
+- [x] Frontend upload UI functional
+- [x] Sample notes can be uploaded via UI
+- [x] Integration tests pass: pytest tests/integration/test_full_pipeline.py
+- [x] Acceptance Test 1: Ingest sample notes → N nodes and M edges created
+- [x] Acceptance Test 2: Export graph → Contains provenance data
+- [x] Manual verification: Upload note → See graph update in real-time
 
 ## Phase 7: Security & Deployment
 - [ ] Add input validation and sanitization
