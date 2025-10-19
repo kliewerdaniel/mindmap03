@@ -23,9 +23,8 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     init_database()
-    # Initialize graph store (will be implemented in Phase 2)
-    # from .services.graph_store import init_graph
-    # init_graph()
+    from .services.graph_store import init_graph
+    init_graph()
 
 # Include routers
 app.include_router(ingest.router, prefix="/api/ingest", tags=["ingestion"])

@@ -20,19 +20,19 @@
 - [x] Add configuration management
 - [x] Set up logging and error handling
 
-## Phase 2: NetworkX Graph Store
-- [ ] Implement NetworkX graph management
-- [ ] Add disk persistence (.gpickle/GraphML)
-- [ ] Create graph CRUD operations
-- [ ] Add graph validation and integrity checks
-- [ ] Implement graph versioning
+## Phase 2: NetworkX Graph Store ✅
+- [x] Implement NetworkX graph management
+- [x] Add disk persistence (.gpickle/GraphML)
+- [x] Create graph CRUD operations
+- [x] Add graph validation and integrity checks
+- [x] Implement graph versioning
 
-## Phase 3: LLM Extraction Module
-- [ ] Set up Ollama/Llama.cpp integration
-- [ ] Implement entity extraction pipeline
-- [ ] Add relationship extraction logic
-- [ ] Create confidence scoring system
-- [ ] Add extraction result caching
+## Phase 3: LLM Extraction Module ✅
+- [x] Set up Ollama/Llama.cpp integration
+- [x] Implement entity extraction pipeline
+- [x] Add relationship extraction logic
+- [x] Create confidence scoring system
+- [x] Add extraction result caching
 
 ## Phase 4: Embeddings & Semantic Search
 - [ ] Set up sentence-transformers integration
