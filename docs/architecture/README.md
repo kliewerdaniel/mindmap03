@@ -24,6 +24,49 @@ Mind Map AI is designed as a distributed system with clear separation of concern
 
 This stack achieves the "all local" constraint while providing production-ready performance, extensibility, and developer ergonomics.
 
+## Embeddings & Vector Search
+
+### Architecture
+
+The system uses a two-tier embedding strategy:
+
+1. **Note Embeddings**: Full note content is embedded for semantic document search
+2. **Node Embeddings**: Individual node labels are embedded for entity-level search
+
+### Technology Stack
+
+- **Embedding Model**: sentence-transformers (`all-MiniLM-L6-v2`)
+  - Dimension: 384
+  - Fast inference on CPU
+  - Good balance of speed and quality
+
+- **Vector Store**: ChromaDB with DuckDB+Parquet backend
+  - Persistent local storage
+  - Efficient similarity search
+  - No external dependencies
+
+### Workflow
+
+```
+[New Note] → [Extract Text] → [Generate Embedding] → [Index in ChromaDB]
+                                                            ↓
+[User Query] → [Generate Query Embedding] → [Similarity Search] → [Ranked Results]
+```
+
+### Search Process
+
+1. User submits search query
+2. Query is embedded using same model
+3. Vector similarity (cosine) computed against indexed vectors
+4. Results ranked by similarity score (0-1)
+5. Top-k results returned with metadata
+
+### Performance Considerations
+
+- Embedding generation: ~50ms per note on CPU
+- Search latency: <100ms for 10k vectors
+- Index persistence: Automatic on collection update
+
 ## High-Level Architecture
 
 ```

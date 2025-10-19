@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple, Optional
 from ..config import settings
 from ..db.db import insert_extract, mark_note_processed, get_note
 from .graph_store import get_graph_store
+from .embeddings import get_embedding_store
 import hashlib
 import re
 
@@ -192,6 +193,7 @@ def update_graph_from_extraction(extraction: Dict, note_id: int, extraction_id: 
         extraction_id: Extract record ID
     """
     graph_store = get_graph_store()
+    embedding_store = get_embedding_store()
 
     # Track created node IDs for edge creation
     node_label_to_id = {}
@@ -210,6 +212,14 @@ def update_graph_from_extraction(extraction: Dict, note_id: int, extraction_id: 
             node_data["type"],
             provenance=provenance,
             confidence=node_data["confidence"]
+        )
+
+        # Index node embedding
+        embedding_store.index_node(
+            node_id,
+            label,
+            node_data["type"],
+            metadata={'confidence': node_data['confidence']}
         )
 
         node_label_to_id[label] = node_id
@@ -257,6 +267,14 @@ def process_note(note_id: int) -> Dict:
         return {"status": "already_processed", "note_id": note_id}
 
     content = note['content']
+
+    # Index note embedding
+    embedding_store = get_embedding_store()
+    embedding_store.index_note(
+        note_id,
+        content,
+        metadata={'filename': note['filename'], 'created_at': note['created_at']}
+    )
 
     # Extract
     try:

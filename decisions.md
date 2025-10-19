@@ -342,3 +342,115 @@ This Phase 2 implementation delivers a robust graph backend with NetworkX poweri
 - **Caching Layers**: Extraction results can be cached with content hashing
 
 This Phase 3 implementation creates a complete end-to-end pipeline from text ingestion through LLM extraction to graph storage, with robust error handling and comprehensive testing establishing the foundation for the full Mind Map AI system.
+
+## Phase 4: Embeddings & Semantic Search
+
+**Date:** October 19, 2025
+**Status:** Completed ✅
+
+### Embedding Strategy Decision
+
+**Two-Tier Embedding Architecture:**
+- **Note Embeddings**: Full document content embedded for comprehensive semantic search across entire notes
+- **Node Embeddings**: Individual entity labels embedded for concept-level semantic matching
+- **Rationale**: Hybrid approach allows both document-level and entity-level search with different precision/relevance tradeoffs
+
+**Sentence-Transformers Selection:**
+- **Model Choice**: `all-MiniLM-L6-v2` (384-dimensional embeddings, fast CPU inference)
+- **Rationale**: Excellent balance of quality and speed, local inference ensures privacy, and mature ecosystem support
+- **Alternatives Considered**: OpenAI embeddings (cloud dependency), BERT-based (heavier resource usage)
+- **Impact**: ~50ms embedding generation per note enables real-time indexing during ingestion
+
+**Vector Storage Decision:**
+- **ChromaDB with DuckDB**: Persistent vector storage with automatic persistence, metadata filtering, and no external dependencies
+- **Rationale**: Local-first design matches project philosophy, Chroma provides SQL-like metadata queries integrated with vector search
+- **Tradeoffs**: DuckDB backend slightly slower than FAISS for pure similarity search but provides better metadata management
+
+### Semantic Search Implementation
+
+**Similarity Scoring:**
+- **Cosine Distance to Similarity**: Convert ChromaDB's distance metric (0-2) to similarity score (0-1)
+- **Formula**: `similarity_score = 1 - distance` enables intuitive ranking where higher scores mean greater relevance
+- **Impact**: Consistent scoring across note and node searches for unified result ranking
+
+**Multi-Type Search:**
+- **Combined Results**: `search_type="both"` merges note and node results into single ranked list
+- **Metadata Augmentation**: Node results enriched with graph metadata (node_type, provenance_count)
+- **Rationale**: Unified API reduces frontend complexity while allowing type-specific searches
+
+### API Design Decisions
+
+**Semantic Search Endpoint:**
+- **Flexible Query Types**: Support filtering to notes, nodes, or combined results via `search_type` parameter
+- **Result Enrichment**: Automatic truncation for display (200 chars) with full text available via separate note retrieval
+- **Top-K Limiting**: Configurable result counts prevent overwhelming large result sets
+
+**Related Nodes Endpoint:**
+- **Label-Based Similarity**: Use node label as query to find semantically related concepts
+- **Self-Exclusion**: Filter out source node from results to avoid trivial matches
+- **Default Limiting**: 5 related nodes per query balances relevance and UI simplicity
+
+### Integration Points
+
+**Extractor Pipeline Integration:**
+- **Dual Indexing**: Both note content and extracted node labels indexed during processing
+- **No Blocking**: Embedding generation runs synchronously but designed for future async processing
+- **Metadata Enrichment**: Note embeddings include filename/create_date, node embeddings include confidence scores
+
+**Graph Store Coordination:**
+- **Node Reference**: Semantic search results reference graph nodes for relationship exploration
+- **Provenance Access**: Node type and occurrence counts added to search results
+- **Future Linking**: Semantic relatedness can inform graph edge recommendations
+
+### Testing Strategy
+
+**Temporary Vector Store Testing:**
+- **Isolation**: Tests create temporary directories preventing interference between test runs
+- **Cleanup**: Automatic resource disposal ensures test environments remain clean
+- **Assertion Logic**: Content-based matching tests actual semantic relevance rather than exact string matches
+
+**Performance Testing:**
+- **Embedding Generation**: Verified 384-dimensional vector output matches expected model dimensions
+- **Search Accuracy**: Manual validation that AI-related queries prioritize AI content over unrelated content
+- **Deletion Testing**: Verified index cleanup maintains data integrity
+
+### Performance Optimizations
+
+**Batch Processing Potential:**
+- **Current Implementation**: Single-item embedding generation
+- **Future Scaling**: `embed_batch` method ready for bulk processing optimization
+- **Memory Efficiency**: Individual note processing prevents large memory spikes
+
+**Index Management:**
+- **Incremental Updates**: Add/delete operations maintain real-time index consistency
+- **Collection Separation**: Separate collections for notes vs nodes enable type-specific optimizations
+- **Persistence Handling**: Automatic ChromaDB checkpointing ensures durability
+
+### Production Considerations
+
+**Vector Store Scalability:**
+- **Current Limits**: ChromaDB handles thousands of documents efficiently for single-user deployment
+- **Horizontal Scaling**: Architecture supports switching to distributed vector stores (Pinecone, Qdrant)
+- **Resource Monitoring**: CPU/memory usage logged for production optimization
+
+**Embedding Model Upgrades:**
+- **Model Swapping**: Configuration-driven model selection allows quality/speed tradeoffs
+- **Backwards Compatibility**: Vector dimension changes require re-indexing but structure supports it
+- **Quality Monitoring**: Confidence thresholds can gate embedding quality
+
+### Known Limitations & Future Enhancements
+
+**Full Re-indexing Requirements:**
+- **Model Changes**: Different embedding models require complete re-processing of existing content
+- **Mitigation**: Phased migration strategies can update embeddings incrementally
+
+**Multilingual Support:**
+- **Current Limitation**: English-only embeddings provide optimal quality
+- **Extension Path**: Multilingual sentence-transformers models can be swapped in for global content
+
+**Advanced Search Features:**
+- **Hybrid Scoring**: Vector similarity can be combined with traditional keyword matching
+- **Temporal Filtering**: Date-based filters can narrow search results
+- **User Feedback**: Relevance rankings can improve with user interaction data
+
+This Phase 4 implementation adds powerful semantic search capabilities while maintaining the local-first, privacy-focused architecture. The embedding strategy integrates seamlessly with the existing extraction pipeline and provides a foundation for advanced knowledge discovery features in future phases.

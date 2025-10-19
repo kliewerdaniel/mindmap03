@@ -34,12 +34,12 @@
 - [x] Create confidence scoring system
 - [x] Add extraction result caching
 
-## Phase 4: Embeddings & Semantic Search
-- [ ] Set up sentence-transformers integration
-- [ ] Implement Chroma/Faiss vector storage
-- [ ] Add semantic search functionality
-- [ ] Create similarity matching algorithms
-- [ ] Add embedding update strategies
+## Phase 4: Embeddings & Semantic Search ✅
+- [x] Set up sentence-transformers integration
+- [x] Implement Chroma/Faiss vector storage
+- [x] Add semantic search functionality
+- [x] Create similarity matching algorithms
+- [x] Add embedding update strategies
 
 ## Phase 5: Frontend Setup & Graph Visualization
 - [ ] Set up Next.js project structure

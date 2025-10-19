@@ -24,7 +24,9 @@ app.add_middleware(
 async def startup_event():
     init_database()
     from .services.graph_store import init_graph
+    from .services.embeddings import init_embeddings
     init_graph()
+    init_embeddings()
 
 # Include routers
 app.include_router(ingest.router, prefix="/api/ingest", tags=["ingestion"])
